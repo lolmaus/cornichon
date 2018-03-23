@@ -22,9 +22,9 @@ function getBrightness (hexCode) {
 
 
 export function md5Color ([str]/*, hash*/) {
-  const bgColor = md5(str).slice(0, 6)
+  const bgColor = '#' + md5(str).slice(0, 6)
   const color = getBrightness(bgColor) > 160 ? 'black' : 'white'
-  const style = `background-color: #${bgColor}; color: ${color};`
+  const style = `background-color: ${bgColor}; color: ${color};`
   return htmlSafe(style)
 }
 

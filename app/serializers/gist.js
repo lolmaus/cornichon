@@ -22,11 +22,15 @@ export default JSONSerializer.extend({
           feature,
           annotations,
           scenarios,
+          comments,
+          errors,
         } = this._generateFeature(file.content)
 
         file.feature     = feature
         file.annotations = annotations
         file.scenarios   = scenarios
+        file.comments    = comments
+        file.errors      = errors
       }
 
       return file
@@ -37,9 +41,11 @@ export default JSONSerializer.extend({
 
   _generateFeature (content) {
     let featureName
+    let featureComments = ''
     const featureAnnotations = []
 
     let currentScenarioName
+    let currentScenarioComments = ''
     let currentScenarioContent = ''
     let currentScenarioAnnotations = []
 
@@ -49,14 +55,16 @@ export default JSONSerializer.extend({
     content
       .split("\n")
       .forEach((line, i) => {
-        if (this._isEmptyLine(line)) return
+        if (this._isEmptyLine(line)) {
+          if (currentScenarioName) currentScenarioContent += "\n"
+          return
+        }
 
         const indentation = this._indentation(line)
 
+        // FEATURE
         if (indentation === 0) {
-          const isAnnotation = this._isAnnotation(line)
-
-          if (isAnnotation) {
+          if (this._isAnnotation(line)) {
             if (featureName) {
               errors.push({
                 message : "Unexpected root-level annotation",
@@ -76,7 +84,20 @@ export default JSONSerializer.extend({
             }
 
             featureName = line
+          } else if (this._isComment(line)) {
+            if (featureName) {
+              errors.push({
+                message : "Encountered root comment after feature",
+                line    : i,
+              })
+              return
+            }
+
+            if (featureComments.length) featureComments += "\n"
+            featureComments += line.trim()
           }
+
+        // SCENARIO
         } else if (indentation === 2) {
           if (!featureName) {
             errors.push({
@@ -90,20 +111,28 @@ export default JSONSerializer.extend({
           if (currentScenarioName) {
             scenarios.push({
               name        : currentScenarioName,
-              content     : currentScenarioContent,
+              content     : currentScenarioContent.trim(),
               annotations : currentScenarioAnnotations,
+              comments    : currentScenarioComments,
             })
 
             currentScenarioName        = null
             currentScenarioContent     = ''
+            currentScenarioComments    = ''
             currentScenarioAnnotations = []
           }
 
+
           if (this._isAnnotation(line)) {
             currentScenarioAnnotations.push(line.trim())
+          } else if (this._isComment(line)) {
+            if (currentScenarioComments.length) currentScenarioComments += "\n"
+            currentScenarioComments += line.trim()
           } else {
             currentScenarioName = line.trim()
           }
+
+        // CONTENT
         } else if (indentation >= 4) {
           if (!currentScenarioName) {
             errors.push({
@@ -127,14 +156,16 @@ export default JSONSerializer.extend({
     if (currentScenarioName) {
       scenarios.push({
         name        : currentScenarioName,
-        content     : currentScenarioContent,
+        content     : currentScenarioContent.trim(),
         annotations : currentScenarioAnnotations,
+        comments    : currentScenarioComments,
       })
     }
 
     return {
       feature     : featureName,
       annotations : featureAnnotations,
+      comments    : featureComments,
       scenarios,
       errors,
     }
@@ -144,9 +175,12 @@ export default JSONSerializer.extend({
     return line.trim()[0] === '@'
   },
 
+  _isComment (line) {
+    return line.trim()[0] === '#'
+  },
+
   _isEmptyLine (line) {
-    const trimmedLine = line.trim()
-    return !trimmedLine.length || trimmedLine[0] === '#'
+    return !line.trim().length
   },
 
   _isFeature (line) {

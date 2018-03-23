@@ -29,7 +29,7 @@
 
 
   <div class="route-gist-features">
-    {{#each gist.featureFiles as |file|}}
+    {{#each (sort-by 'feature' gist.featureFiles) as |file|}}
       {{feature-file
         class = 'route-gist-feature'
         file  = file

@@ -7,6 +7,7 @@ import {array} from 'ember-data-model-fragments/attributes'
 export default Fragment.extend({
   name        : attr('string'),
   content     : attr('string'),
+  comments    : attr('string'),
   annotations : array('string'),
 
   isExpanded : false,

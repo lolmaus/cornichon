@@ -17,6 +17,7 @@ export default Fragment.extend({
   content   : attr('string'),
 
   feature     : attr('string'),
+  comments    : attr('string'),
   annotations : array('string'),
   scenarios   : fragmentArray('scenario'),
   errors      : fragmentArray('error'),

@@ -49,6 +49,12 @@
     {{file.filename}}
   </div>{{! filename }}
 
+  {{#if file.comments.length}}
+    <div class="featureFile-comments">
+      {{~file.comments~}}
+    </div>{{! comments }}
+  {{/if}}
+
   {{#if file.scenarios.length}}
     <div class="featureFile-scenarios">
       {{#each file.scenarios as |scenario|}}
@@ -59,6 +65,12 @@
             {{if scenario.isExpanded     '-expanded' '-collapsed'}}
           "
         >
+          {{#if (and scenario.isExpanded scenario.comments.length)}}
+            <div class="featureFile-scenario-comments">
+              {{~scenario.comments~}}
+            </div>{{! scenario-comments }}
+          {{/if}}{{! scenario.comments.length }}
+
           <div class="featureFile-scenario-title">
             {{#if scenario.content.length}}
               <a
