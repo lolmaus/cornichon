@@ -32,11 +32,7 @@ export default JSONSerializer.extend({
       return file
     })
 
-    const result = this._super(typeClass, payload)
-
-    console.log('normalize', result)
-
-    return result
+    return this._super(typeClass, payload)
   },
 
   _generateFeature (content) {

@@ -16,6 +16,10 @@ module.exports = function (defaults) {
         'app/pods',
       ],
     },
+
+    nodeModulesToVendor : [
+      'node_modules/blueimp-md5/js',
+    ],
   })
 
   // Use `app.import` to add additional libraries to the generated
@@ -30,6 +34,11 @@ module.exports = function (defaults) {
   // modules that you would like to import into your application
   // please specify an object with the list of modules as keys
   // along with the exports of each module as its value.
+  app.import('vendor/md5.js', {
+    using : [
+      { transformation : 'amd', as : 'md5' },
+    ],
+  })
 
   return app.toTree()
 }

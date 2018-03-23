@@ -7,7 +7,7 @@
     {{#if file.annotations.length}}
       <span class="featureFile-annotations">
         {{#each file.annotations as |annotation|}}
-          <span class="featureFile-annotation">
+          <span class="featureFile-annotation" style={{md5-color annotation}}>
             {{annotation}}
           </span>{{! annotation }}
         {{/each}}{{! file.annotations }}
@@ -76,7 +76,10 @@
             {{#if scenario.annotations.length}}
               <span class="featureFile-scenario-annotations">
                 {{#each scenario.annotations as |annotation|}}
-                  <span class="featureFile-scenario-annotation featureFile-annotation">
+                  <span
+                    class = "featureFile-scenario-annotation featureFile-annotation"
+                    style = {{md5-color annotation}}
+                  >
                     {{annotation}}
                   </span>{{! scenario-annotation annotation }}
                 {{/each}}{{! scenario.annotations }}

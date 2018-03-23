@@ -1,7 +1,7 @@
 const fs = require('fs')
 
 function getDeployTarget () {
-  return process.env.DEPLOY_TARGET || getDefaultDeployTarget()
+  return process.env.COR_DEPLOY_TARGET || getDefaultDeployTarget()
 }
 
 function getDefaultDeployTarget () {

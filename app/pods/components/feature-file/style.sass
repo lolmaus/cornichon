@@ -35,9 +35,14 @@
 
 .featureFile-scenarios
   font-family: monospace
+  line-height: 1.3em
 
-  .featureFile-scenario.-no-content
-    margin-left: 2ch
+  .featureFile-scenario
+    &.-no-content
+      margin-left: 2ch
+
+    &.-expanded
+      margin-bottom: 1em
 
 
 
@@ -57,10 +62,11 @@
 .featureFile-annotation
   display: inline-block
   vertical-align: middle
-  padding: 0.1em 0.2em
-  border: 1px solid darkblue
+  padding: 0.2em 0.3em
 
-  font-size: 0.8em
+  font-size: 0.7em
+  line-height: 1em
+  font-family: sans-serif
   border-radius: 0.5em
   color: darkblue
   background-color: lightblue
@@ -68,4 +74,4 @@
 
 
 .featureFile-scenario-annotation
-  font-size: 0.7em
+  font-size: 0.6em

@@ -3,8 +3,11 @@
 
 module.exports = function (deployTarget) {
   let ENV = {
-    build : {},
+    build   : {},
     // include other plugin configuration that applies to all deploy targets here
+    ghpages : {
+      gitRemoteUrl : 'git@github.com:lolmaus/cornichon.git',
+    },
   }
 
   if (deployTarget === 'development') {

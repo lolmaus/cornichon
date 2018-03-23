@@ -28,6 +28,8 @@ export default Fragment.extend({
   areAnyScenariosCollapsed  : any('scenarios.@each.isExpanded', scenario =>  !scenario.isExpanded),
 
   setAll (value) {
-    this.scenarios.setEach('isExpanded', value)
+    this.scenarios.forEach(scenario => {
+      if (scenario.content.length) scenario.set('isExpanded', value)
+    })
   },
 })
