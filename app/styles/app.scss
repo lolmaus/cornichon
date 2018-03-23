@@ -1,0 +1,13 @@
+// Reset
+@import "node_modules/sass-toolkit/stylesheets/toolkit/reset";
+
+html {
+  font-family: sans-serif;
+}
+
+// Components
+@import 'app/pods/components/feature-file/style';
+
+// Routes
+@import 'app/pods/application/style';
+@import 'app/pods/gist/style';

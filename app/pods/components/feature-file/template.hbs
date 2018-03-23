@@ -1,0 +1,110 @@
+<div class="featureFile-header">
+  <div class="featureFile-header-item _title">
+    <span class="featureFile-title">
+      {{file.feature}}
+    </span>{{! title }}
+
+    {{#if file.annotations.length}}
+      <span class="featureFile-annotations">
+        {{#each file.annotations as |annotation|}}
+          <span class="featureFile-annotation">
+            {{annotation}}
+          </span>{{! annotation }}
+        {{/each}}{{! file.annotations }}
+      </span>{{! annotations }}
+    {{/if}}{{! file.annotations.length }}
+  </div>{{! header-item _title }}
+
+  {{#if file.doAnyScenariosHaveContent}}
+    <div class="featureFile-header-item _controls featureFile-controls">
+      {{#if file.areAnyScenariosCollapsed}}
+        <a
+          href
+          {{action 'setAll' true}}
+        >
+          {{~concat~}}
+          Expand All
+          {{~concat~}}
+        </a>
+      {{/if}}{{! file.areAnyScenariosCollapsed }}
+
+      {{#if file.areAnyScenariosExpanded}}
+        <a
+          href
+          {{action 'setAll' false}}
+        >
+          {{~concat~}}
+          Collapse All
+          {{~concat~}}
+        </a>
+      {{/if}}{{! file.areAnyScenariosExpanded }}
+    </div>{{! header-item _controls controsl }}
+  {{/if}}{{! file.doAnyScenariosHaveContent }}
+</div>{{! header }}
+
+
+<div class="featureFile-content">
+
+  <div class="featureFile-filename">
+    {{file.filename}}
+  </div>{{! filename }}
+
+  {{#if file.scenarios.length}}
+    <div class="featureFile-scenarios">
+      {{#each file.scenarios as |scenario|}}
+        <div
+          class = "
+            featureFile-scenario
+            {{if scenario.content.length '-content'  '-no-content'}}
+            {{if scenario.isExpanded     '-expanded' '-collapsed'}}
+          "
+        >
+          <div class="featureFile-scenario-title">
+            {{#if scenario.content.length}}
+              <a
+                href
+                {{action 'toggleScenario' scenario}}
+              >
+                {{~if scenario.isExpanded '⊟' '⊞'~}}
+              </a>
+            {{/if}}{{! scenario.content.length }}
+
+            <span class="featureFile-scenario-name">
+              {{scenario.name}}
+            </span>
+
+            {{#if scenario.annotations.length}}
+              <span class="featureFile-scenario-annotations">
+                {{#each scenario.annotations as |annotation|}}
+                  <span class="featureFile-scenario-annotation featureFile-annotation">
+                    {{annotation}}
+                  </span>{{! scenario-annotation annotation }}
+                {{/each}}{{! scenario.annotations }}
+              </span>{{! scenario-annotations }}
+            {{/if}}{{! scenario.annotations.length }}
+          </div>{{! scenario-title }}
+
+          {{#if scenario.isExpanded}}
+            <div class="featureFile-scenario-content">
+              {{~scenario.content~}}
+            </div>{{! scenario-content }}
+          {{/if}}{{! scenario.isExpanded }}
+        </div>{{! scenario }}
+      {{/each}}{{! file.scenarios }}
+    </div>{{! scenarios }}
+  {{/if}}{{! file.scenarios.length }}
+
+  {{#if file.errors.length}}
+    <div class="featureFile-errors">
+      {{#each file.errors as |error|}}
+        <div class="featureFile-error">
+          <div class="featureFile-error-message">
+            {{error.line}}:
+            {{error.essage}}
+          </div>{{! scenario-name }}
+        </div>{{! scenario }}
+      {{/each}}{{! file.errors }}
+    </div>{{! errors }}
+  {{/if}}{{! file.errors.length }}
+
+</div>{{! content }}

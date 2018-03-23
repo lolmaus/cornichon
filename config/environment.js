@@ -1,27 +1,44 @@
-'use strict';
+'use strict'
 
-module.exports = function(environment) {
+const _            = require('lodash')
+const dotenvConfig = require('./dotenv')
+
+module.exports = function (environment) {
+  const {clientAllowedKeys} = dotenvConfig(environment)
+  const envVars             = _.pick(process.env, clientAllowedKeys)
+
   let ENV = {
-    modulePrefix: 'cornichon',
+    modulePrefix    : 'cornichon',
+    podModulePrefix : 'cornichon/pods',
     environment,
-    rootURL: '/',
-    locationType: 'auto',
-    EmberENV: {
-      FEATURES: {
+    rootURL         : envVars.COR_ROOT_URL || '/',
+    locationType    : 'hash',
+    EmberENV        : {
+      FEATURES : {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
       },
-      EXTEND_PROTOTYPES: {
+      EXTEND_PROTOTYPES : {
         // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+        Date : false,
+      },
     },
 
-    APP: {
+    APP : {
       // Here you can pass flags/options to your application instance
       // when it is created
-    }
-  };
+    },
+
+    torii : {
+      providers : {
+        'github-oauth2' : {
+          apiKey : envVars.COR_GITHUB_CLIENT_ID,
+          // redirectUri: overridden in provider's `redirectUri` property
+          scope  : 'public_repo',
+        },
+      },
+    },
+  }
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
@@ -33,19 +50,19 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // Testem prefers this...
-    ENV.locationType = 'none';
+    ENV.locationType = 'none'
 
     // keep test console output quieter
-    ENV.APP.LOG_ACTIVE_GENERATION = false;
-    ENV.APP.LOG_VIEW_LOOKUPS = false;
+    ENV.APP.LOG_ACTIVE_GENERATION = false
+    ENV.APP.LOG_VIEW_LOOKUPS = false
 
-    ENV.APP.rootElement = '#ember-testing';
-    ENV.APP.autoboot = false;
+    ENV.APP.rootElement = '#ember-testing'
+    ENV.APP.autoboot = false
   }
 
   if (environment === 'production') {
     // here you can enable a production-specific feature
   }
 
-  return ENV;
-};
+  return ENV
+}

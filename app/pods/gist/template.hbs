@@ -1,0 +1,39 @@
+<div class="route-gist">
+
+  {{#if gist.doAnyScenariosHaveContent}}
+    <div class="route-gist-controls">
+      {{#if gist.areAnyScenariosCollapsed}}
+        <a
+          href
+          {{action 'setAll' true}}
+        >
+          {{~concat~}}
+          Expand All
+          {{~concat~}}
+        </a>
+      {{/if}}{{! gist.areAnyScenariosCollapsed }}
+
+      {{#if gist.areAnyScenariosExpanded}}
+        <a
+          href
+          {{action 'setAll' false}}
+        >
+          {{~concat~}}
+          Collapse All
+          {{~concat~}}
+        </a>
+      {{/if}}{{! gist.areAnyScenariosExpanded }}
+    </div>{{! title }}
+  {{/if}}{{! gist.doAnyScenariosHaveContent }}
+
+
+
+  <div class="route-gist-features">
+    {{#each gist.featureFiles as |file|}}
+      {{feature-file
+        class = 'route-gist-feature'
+        file  = file
+      }}
+    {{/each}}
+  </div>{{! features }}
+</div>{{! route-gist }}
