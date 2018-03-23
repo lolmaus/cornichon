@@ -15,9 +15,9 @@
     {{/if}}{{! file.annotations.length }}
   </div>{{! header-item _title }}
 
-  {{#if file.doAnyScenariosHaveContent}}
+  {{#if file.areAnyScenariosExpandable}}
     <div class="featureFile-header-item _controls featureFile-controls">
-      {{#if file.areAnyScenariosCollapsed}}
+      {{#if file.areAnyExpandableScenariosCollapsed}}
         <a
           href
           {{action 'setAll' true}}
@@ -26,9 +26,9 @@
           Expand All
           {{~concat~}}
         </a>
-      {{/if}}{{! file.areAnyScenariosCollapsed }}
+      {{/if}}{{! file.areAnyExpandableScenariosCollapsed }}
 
-      {{#if file.areAnyScenariosExpanded}}
+      {{#if file.areAnyExpandableScenariosExpanded}}
         <a
           href
           {{action 'setAll' false}}
@@ -37,9 +37,9 @@
           Collapse All
           {{~concat~}}
         </a>
-      {{/if}}{{! file.areAnyScenariosExpanded }}
+      {{/if}}{{! file.areAnyExpandableScenariosExpanded }}
     </div>{{! header-item _controls controsl }}
-  {{/if}}{{! file.doAnyScenariosHaveContent }}
+  {{/if}}{{! file.areAnyScenariosExpandable }}
 </div>{{! header }}
 
 

@@ -1,8 +1,8 @@
 <div class="route-gist">
 
-  {{#if gist.doAnyScenariosHaveContent}}
+  {{#if gist.areAnyScenariosExpandable}}
     <div class="route-gist-controls">
-      {{#if gist.areAnyScenariosCollapsed}}
+      {{#if gist.areAnyExpandableScenariosCollapsed}}
         <a
           href
           {{action 'setAll' true}}
@@ -11,9 +11,9 @@
           Expand All
           {{~concat~}}
         </a>
-      {{/if}}{{! gist.areAnyScenariosCollapsed }}
+      {{/if}}{{! gist.areAnyExpandableScenariosCollapsed }}
 
-      {{#if gist.areAnyScenariosExpanded}}
+      {{#if gist.areAnyExpandableScenariosExpanded}}
         <a
           href
           {{action 'setAll' false}}
@@ -22,9 +22,9 @@
           Collapse All
           {{~concat~}}
         </a>
-      {{/if}}{{! gist.areAnyScenariosExpanded }}
+      {{/if}}{{! gist.areAnyExpandableScenariosExpanded }}
     </div>{{! title }}
-  {{/if}}{{! gist.doAnyScenariosHaveContent }}
+  {{/if}}{{! gist.areAnyScenariosExpandable }}
 
 
 

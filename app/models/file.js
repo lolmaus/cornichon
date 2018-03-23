@@ -2,8 +2,12 @@ import attr from 'ember-data/attr'
 import Fragment from 'ember-data-model-fragments/fragment'
 import {array, fragmentArray} from 'ember-data-model-fragments/attributes'
 
-import {any} from 'ember-awesome-macros/array'
+import {and, equal} from 'ember-awesome-macros'
+import {isAny, filterBy} from 'ember-awesome-macros/array'
 import computed from 'ember-macro-helpers/computed'
+import raw from 'ember-macro-helpers/raw'
+
+import bool from 'cornichon/macros/bool'
 
 
 
@@ -22,11 +26,14 @@ export default Fragment.extend({
   scenarios   : fragmentArray('scenario'),
   errors      : fragmentArray('error'),
 
-  isFeature : computed('feature', feature => feature && !!feature.split('.').get('lastObject')),
+  extension           : computed('filename', filename => filename.split('.').get('lastObject')),
+  isFeature           : equal('extension', raw('feature')),
+  expandableScenarios : filterBy('scenarios', raw('isExpandable'), true),
+  isExpandable        : and('isFeature',  bool('expandableScenarios.length')),
 
-  doAnyScenariosHaveContent : any('scenarios.@each.content',    scenario => !!scenario.content.length),
-  areAnyScenariosExpanded   : any('scenarios.@each.isExpanded', scenario =>   scenario.isExpanded),
-  areAnyScenariosCollapsed  : any('scenarios.@each.isExpanded', scenario =>  !scenario.isExpanded),
+  areAnyScenariosExpandable          : isAny('scenarios', raw('isExpandable'), true),
+  areAnyExpandableScenariosExpanded  : isAny('expandableScenarios', raw('isExpanded'), true),
+  areAnyExpandableScenariosCollapsed : isAny('expandableScenarios', raw('isExpanded'), false),
 
   setAll (value) {
     this.scenarios.forEach(scenario => {

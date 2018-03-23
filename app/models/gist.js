@@ -10,11 +10,12 @@ export default Model.extend({
   description : attr('string'),
   files       : fragmentArray('file'),
 
-  featureFiles : filterBy('files', raw('isFeature'), true),
+  featureFiles           : filterBy('files',        raw('isFeature'),   true),
+  expandableFeatureFiles : filterBy('featureFiles', raw('isExpandable'), true),
 
-  doAnyScenariosHaveContent : isAny('featureFiles', raw('doAnyScenariosHaveContent')),
-  areAnyScenariosExpanded   : isAny('featureFiles', raw('areAnyScenariosExpanded')),
-  areAnyScenariosCollapsed  : isAny('featureFiles', raw('areAnyScenariosCollapsed')),
+  areAnyScenariosExpandable          : isAny('featureFiles',           raw('areAnyScenariosExpandable'),          true),
+  areAnyExpandableScenariosExpanded  : isAny('expandableFeatureFiles', raw('areAnyExpandableScenariosExpanded'),  true),
+  areAnyExpandableScenariosCollapsed : isAny('expandableFeatureFiles', raw('areAnyExpandableScenariosCollapsed'), true),
 
   setAll (value) {
     this.files.invoke('setAll', value)
