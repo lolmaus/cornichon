@@ -6,7 +6,11 @@
     </div>
 
     <div class="route-application-header-item _last">
-
+      {{login-button
+        isAuthenticating  = loginTask.isRunning
+        isAuthenticated   = session.isAuthenticated
+        loginToggleAction = (action (if session.isAuthenticated 'logout' (perform loginTask)))
+      }}
     </div>
   </header>{{! header }}
 

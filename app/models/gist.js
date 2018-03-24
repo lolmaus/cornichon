@@ -6,6 +6,7 @@ import {isAny, filterBy} from 'ember-awesome-macros/array'
 import raw from 'ember-macro-helpers/raw'
 
 
+
 export default Model.extend({
   description : attr('string'),
   files       : fragmentArray('file'),

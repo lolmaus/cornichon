@@ -34,8 +34,10 @@ const clientAllowedKeys = [
   'COR_DEPLOY_TARGET',
   'COR_GITHUB_CLIENT_ID',
   'COR_GATEKEEPER_URL',
+  'COR_HOST',
   'COR_ROOT_URL',
 ]
+
 
 
 module.exports = function (env) {

@@ -11,6 +11,7 @@ module.exports = function (environment) {
     modulePrefix    : 'cornichon',
     podModulePrefix : 'cornichon/pods',
     environment,
+    envVars,
     rootURL         : envVars.COR_ROOT_URL || '/',
     locationType    : 'hash',
     EmberENV        : {
@@ -34,7 +35,7 @@ module.exports = function (environment) {
         'github-oauth2' : {
           apiKey : envVars.COR_GITHUB_CLIENT_ID,
           // redirectUri: overridden in provider's `redirectUri` property
-          scope  : 'public_repo',
+          scope  : 'gist',
         },
       },
     },

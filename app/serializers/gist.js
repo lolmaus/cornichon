@@ -39,6 +39,31 @@ export default JSONSerializer.extend({
     return this._super(typeClass, payload)
   },
 
+  serialize (snapshot, options) {
+    const oldFiles =
+      snapshot
+        .record
+        .changedAttributes()
+        .files
+        .firstObject
+        .reduce((result, {filename}) => {
+          return {...result, [filename] : null}
+        }, {})
+
+    const payload = this._super(...arguments)
+
+    const newFiles =
+      payload
+        .files
+        .reduce((result, {content, filename}) => {
+          return {...result, [filename] : {content}}
+        }, {})
+
+    payload.files = {...oldFiles, ...newFiles}
+
+    return payload
+  },
+
   _generateFeature (content) {
     let featureName
     let featureComments = ''
