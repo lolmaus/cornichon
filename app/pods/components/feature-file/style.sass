@@ -1,8 +1,14 @@
 .featureFile
-  padding: 1rem
+  $padding: 1rem
+  $border: 3px
+  padding: $padding
 
   background-color: #f4f4f4
   border-radius: 0.5rem
+
+  &.-dirty
+    border: 3px dashed red
+    padding: calc(#{$padding} - #{$border})
 
   .featureFile-content
     margin-left: 1rem
@@ -11,8 +17,11 @@
 
 .featureFile-header
   display: flex
-  justify-content: space-between
   align-items: center
+
+  .featureFile-header-item._title
+    flex-grow: 1
+    margin-right: 2rem
 
 
 

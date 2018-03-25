@@ -1,8 +1,11 @@
-import { camelize, underscore } from '@ember/string'
+import { underscore } from '@ember/string'
 
 import JSONSerializer from 'ember-data/serializers/json'
 
 import _ from 'lodash'
+
+import camelizeKeys from 'cornichon/utils/camelize-keys'
+import padLinesLeft from 'cornichon/utils/pad-lines-left'
 
 
 
@@ -13,7 +16,7 @@ export default JSONSerializer.extend({
 
   normalize (typeClass, payload) {
     payload.files = _.map(payload.files, (file, filename) => {
-      file = _.mapKeys(file, (value, key) => camelize(key))
+      file = camelizeKeys(file)
 
       file.filename = filename
 
@@ -36,30 +39,44 @@ export default JSONSerializer.extend({
       return file
     })
 
+    payload.owner        = camelizeKeys(payload.owner)
+    payload.owner.userId = payload.owner.id
+    delete payload.owner.id
+
     return this._super(typeClass, payload)
   },
 
   serialize (snapshot, options) {
-    const oldFiles =
-      snapshot
-        .record
-        .changedAttributes()
-        .files
-        .firstObject
-        .reduce((result, {filename}) => {
-          return {...result, [filename] : null}
-        }, {})
+    const payload = {}
 
-    const payload = this._super(...arguments)
+    const changedAttrs = snapshot.record.changedAttributes()
 
-    const newFiles =
-      payload
-        .files
-        .reduce((result, {content, filename}) => {
-          return {...result, [filename] : {content}}
-        }, {})
+    if (changedAttrs.description) {
+      payload.description = changedAttrs.description[1]
+    }
 
-    payload.files = {...oldFiles, ...newFiles}
+    if (changedAttrs.files) {
+      const oldFiles =
+        changedAttrs
+          .files
+          .firstObject
+          .reduce((result, {filename}) => {
+            return {...result, [filename] : null}
+          }, {})
+
+      const newFiles =
+        snapshot
+          .record
+          .files
+          .toArray()
+          .reduce((result, {content, filename}) => {
+            return {...result, [filename] : {content}}
+          }, {})
+
+      payload.files = {...oldFiles, ...newFiles}
+
+      this._serializeFeatures({payload, record : snapshot.record})
+    }
 
     return payload
   },
@@ -214,5 +231,39 @@ export default JSONSerializer.extend({
 
   _indentation (line) {
     return line.match(/^( *)/)[0].length
+  },
+
+  _serializeFeatures ({payload, record}) {
+    record.featureFiles.forEach(file => {
+      let content = ''
+
+      if (file.comments) content = file.comments + "\n\n"
+
+      if (file.annotations) {
+        file.annotations.toArray().forEach(annotation => {
+          content += annotation + "\n"
+        })
+      }
+
+      content += file.feature
+
+      file.scenarios.forEach(scenario => {
+        content += "\n\n\n\n"
+
+        if (scenario.comments) content += padLinesLeft(scenario.comments, "  ") + "\n\n"
+
+        if (scenario.annotations) {
+          scenario.annotations.forEach(annotation => {
+            content += "  " + annotation + "\n"
+          })
+        }
+
+        content += padLinesLeft(scenario.name, "  ")
+
+        if (scenario.content) content += "\n" + padLinesLeft(scenario.content, "    ")
+      })
+
+      payload.files[file.filename] = { content }
+    })
   },
 })

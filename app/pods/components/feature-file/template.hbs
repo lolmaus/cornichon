@@ -1,8 +1,11 @@
 <div class="featureFile-header">
   <div class="featureFile-header-item _title">
-    <span class="featureFile-title">
-      {{file.feature}}
-    </span>{{! title }}
+    {{editable-field
+      obj        = file
+      key        = 'feature'
+      class      = "featureFile-title"
+      isEditable = isFormEditable
+    }}
 
     {{#if file.annotations.length}}
       <span class="featureFile-annotations">
@@ -123,3 +126,11 @@
   {{/if}}{{! file.errors.length }}
 
 </div>{{! content }}
+
+{{#if file.hasDirtyFields}}
+  <button
+    {{action 'revert'}}
+  >
+    Revert
+  </button>
+{{/if}}

@@ -1,6 +1,7 @@
 import ToriiAuthenticator from 'ember-simple-auth/authenticators/torii'
 import {inject as service} from '@ember/service'
 import fetch from 'cornichon/utils/fetch-rsvp'
+import fetchGithub from 'cornichon/utils/fetch-github'
 import RSVP from 'rsvp'
 
 
@@ -43,5 +44,12 @@ export default ToriiAuthenticator.extend({
         this._authenticateWithProvider(provider, data)
         return data
       })
+
+      // Retrieve user
+      .then(data => RSVP.hash({
+        data,
+        user : fetchGithub('user', data.token),
+      }))
+      .then(({data, user}) => ({...data, user}))
   },
 })

@@ -1,39 +1,116 @@
 <div class="route-gist">
 
-  {{#if gist.areAnyScenariosExpandable}}
-    <div class="route-gist-controls">
-      {{#if gist.areAnyExpandableScenariosCollapsed}}
-        <a
-          href
-          {{action 'setAll' true}}
-        >
-          {{~concat~}}
-          Expand All
-          {{~concat~}}
-        </a>
-      {{/if}}{{! gist.areAnyExpandableScenariosCollapsed }}
+  {{#if gist.htmlUrl}}
+    <h1>
+      Gist <a href={{gist.htmlUrl}}>{{gist.id}}</a>
+    </h1>
+  {{/if}}
 
-      {{#if gist.areAnyExpandableScenariosExpanded}}
-        <a
-          href
-          {{action 'setAll' false}}
+  {{editable-field
+    obj        = gist
+    key        = 'description'
+    class      = "route-gist-description"
+    isEditable = isFormEditable
+  }}
+
+  <div class="route-gist-controls">
+
+    <div class="route-gist-controls-item _first">
+      <button
+        disabled = {{or (not isFormEditable) (not gist.hasDirtyFields)}}
+        {{action (perform saveTask)}}
+      >
+        {{if saveTask.isRunning 'Saving...' 'Save'}}
+      </button>
+
+      <button
+        disabled = {{or (not isFormEditable) (not gist.hasDirtyFields)}}
+        {{action 'revert'}}
+      >
+        Revert
+      </button>
+
+      {{#if gist.isOwn}}
+        <button
+          disabled = {{or gist.hasDirtyFields (not isFormEditable)}}
+          title = "GitHub does not allow forking gists, so instead we can create a separate copy. The gist must be saved in order to copy."
+          {{action (perform cloneTask)}}
         >
-          {{~concat~}}
-          Collapse All
-          {{~concat~}}
-        </a>
-      {{/if}}{{! gist.areAnyExpandableScenariosExpanded }}
-    </div>{{! title }}
-  {{/if}}{{! gist.areAnyScenariosExpandable }}
+          Clone
+        </button>
+      {{else if session.isAuthenticated}}{{! gist.isOwn }}
+        <button {{action (perform forkTask)}}>Fork</button>
+      {{/if}}{{! gist.isOwn }}
+    </div>{{! gist-controls-item _first }}
+
+    <div class="route-gist-controls-item _last">
+      {{#if gist.areAnyScenariosExpandable}}
+        <div class="route-gist-globalExapndCollapseControls">
+          {{#if gist.areAnyExpandableScenariosCollapsed}}
+            <a
+              href
+              {{action 'setAll' true}}
+            >
+              {{~concat~}}
+              Expand All
+              {{~concat~}}
+            </a>
+          {{/if}}{{! gist.areAnyExpandableScenariosCollapsed }}
+
+          {{#if gist.areAnyExpandableScenariosExpanded}}
+            <a
+              href
+              {{action 'setAll' false}}
+            >
+              {{~concat~}}
+              Collapse All
+              {{~concat~}}
+            </a>
+          {{/if}}{{! gist.areAnyExpandableScenariosExpanded }}
+        </div>{{! globalExapndCollapseControls}}
+      {{/if}}{{! gist.areAnyScenariosExpandable }}
+    </div>{{! controls-item _last }}
+  </div>{{! controls }}
 
 
 
   <div class="route-gist-features">
     {{#each (sort-by 'feature' gist.featureFiles) as |file|}}
       {{feature-file
-        class = 'route-gist-feature'
-        file  = file
+        class          = 'route-gist-feature'
+        file           = file
+        isFormEditable = isFormEditable
       }}
     {{/each}}
   </div>{{! features }}
+
+
+
+  <div>
+    <button
+      disabled = {{or (not isFormEditable) (not gist.hasDirtyFields)}}
+      {{action (perform saveTask)}}
+    >
+      {{if saveTask.isRunning 'Saving...' 'Save'}}
+    </button>
+
+    <button
+      disabled = {{or (not isFormEditable) (not gist.hasDirtyFields)}}
+      {{action 'revert'}}
+    >
+      Revert
+    </button>
+
+    {{#if gist.isOwn}}
+      <button
+        disabled = {{or gist.hasDirtyFields (not isFormEditable)}}
+        title = "GitHub does not allow forking gists, so instead we can create a separate copy. The gist must be saved in order to copy."
+        {{action (perform cloneTask)}}
+      >
+        Clone
+      </button>
+    {{else if session.isAuthenticated}}{{! gist.isOwn }}
+      <button {{action (perform forkTask)}}>Fork</button>
+    {{/if}}{{! gist.isOwn }}
+  </div>
 </div>{{! route-gist }}

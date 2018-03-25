@@ -1,0 +1,22 @@
+{{#if isEditingEffective}}
+  {{!#click-outside action=(action (mut isEditing) false)}}
+    {{#auto-focus}}
+      <textarea
+        class     = 'editableField-input'
+        oninput   = {{action 'userInput' value="target.value"}}
+        onblur    = {{action 'toggleEditing' false}}
+        onkeydown = {{action 'cancelEditingOnCtrlEnter'}}
+      >
+        {{~userInputValue~}}
+      </textarea>
+    {{/auto-focus}}
+  {{!/click-outside}}
+{{else}}{{! isEditing }}
+  <a
+    href
+    class = 'editableField-value'
+    {{action 'toggleEditing'}}
+  >
+    {{~userInputValue~}}
+  </a>{{! value }}
+{{/if}}{{! isEditing }}

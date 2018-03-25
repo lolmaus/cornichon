@@ -38,6 +38,7 @@ module.exports = {
     "quotes": "off",
     "quote-props": ["error", "as-needed"],
     "spaced-comment": "off",
+    "standard/no-callback-literal": "off",
     "standard/object-curly-even-spacing": "off",
   },
   overrides: [

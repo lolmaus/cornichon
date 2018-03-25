@@ -5,7 +5,12 @@ html {
   font-family: sans-serif;
 }
 
+button[disabled] {
+  color: grey;
+}
+
 // Components
+@import 'app/pods/components/editable-field/style';
 @import 'app/pods/components/feature-file/style';
 
 // Routes
