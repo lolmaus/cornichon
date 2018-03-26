@@ -6,41 +6,32 @@
     </h1>
   {{/if}}
 
-  {{editable-field
+  {{editable-input
     obj        = gist
     key        = 'description'
     class      = "route-gist-description"
-    isEditable = isFormEditable
+    isEditable = isEditing
   }}
 
   <div class="route-gist-controls">
 
     <div class="route-gist-controls-item _first">
-      <button
-        disabled = {{or (not isFormEditable) (not gist.hasDirtyFields)}}
-        {{action (perform saveTask)}}
-      >
-        {{if saveTask.isRunning 'Saving...' 'Save'}}
-      </button>
-
-      <button
-        disabled = {{or (not isFormEditable) (not gist.hasDirtyFields)}}
-        {{action 'revert'}}
-      >
-        Revert
-      </button>
-
-      {{#if gist.isOwn}}
-        <button
-          disabled = {{or gist.hasDirtyFields (not isFormEditable)}}
-          title = "GitHub does not allow forking gists, so instead we can create a separate copy. The gist must be saved in order to copy."
-          {{action (perform cloneTask)}}
-        >
-          Clone
-        </button>
-      {{else if session.isAuthenticated}}{{! gist.isOwn }}
-        <button {{action (perform forkTask)}}>Fork</button>
-      {{/if}}{{! gist.isOwn }}
+      {{gist-controls
+        isEditing       = isEditing
+        isEditable      = isEditable
+        isOwn           = gist.isOwn
+        isAuthenticated = session.isAuthenticated
+        hasDirtyFields  = gist.hasDirtyFields
+        saveIsRunning   = saveTask.isRunning
+        cloneIsRunning  = cloneTask.isRunning
+        forkIsRunning   = forkTask.isRunning
+        editAction      = (action 'startEditing')
+        cancelAction    = (action 'cancelEditing')
+        saveAction      = (action (perform saveTask))
+        cloneAction     = (action (perform cloneTask))
+        forkAction      = (action (perform forkTask))
+        revertAction    = (action 'revert')
+      }}
     </div>{{! gist-controls-item _first }}
 
     <div class="route-gist-controls-item _last">
@@ -77,9 +68,9 @@
   <div class="route-gist-features">
     {{#each (sort-by 'feature' gist.featureFiles) as |file|}}
       {{feature-file
-        class          = 'route-gist-feature'
-        file           = file
-        isFormEditable = isFormEditable
+        class      = 'route-gist-feature'
+        file       = file
+        isEditable = isEditing
       }}
     {{/each}}
   </div>{{! features }}
@@ -87,30 +78,32 @@
 
 
   <div>
-    <button
-      disabled = {{or (not isFormEditable) (not gist.hasDirtyFields)}}
-      {{action (perform saveTask)}}
-    >
-      {{if saveTask.isRunning 'Saving...' 'Save'}}
-    </button>
-
-    <button
-      disabled = {{or (not isFormEditable) (not gist.hasDirtyFields)}}
-      {{action 'revert'}}
-    >
-      Revert
-    </button>
-
-    {{#if gist.isOwn}}
+    {{#if session.isAuthenticated}}
       <button
-        disabled = {{or gist.hasDirtyFields (not isFormEditable)}}
-        title = "GitHub does not allow forking gists, so instead we can create a separate copy. The gist must be saved in order to copy."
-        {{action (perform cloneTask)}}
+        disabled = {{or (not isEditable) (not gist.hasDirtyFields)}}
+        {{action (perform saveTask)}}
       >
-        Clone
+        {{if saveTask.isRunning 'Saving...' 'Save'}}
       </button>
-    {{else if session.isAuthenticated}}{{! gist.isOwn }}
-      <button {{action (perform forkTask)}}>Fork</button>
-    {{/if}}{{! gist.isOwn }}
+
+      <button
+        disabled = {{or (not isEditable) (not gist.hasDirtyFields)}}
+        {{action 'revert'}}
+      >
+        Revert
+      </button>
+
+      {{#if gist.isOwn}}
+        <button
+          disabled = {{or gist.hasDirtyFields (not isEditable)}}
+          title = "GitHub does not allow forking gists, so instead we can create a separate copy. The gist must be saved in order to copy."
+          {{action (perform cloneTask)}}
+        >
+          Clone
+        </button>
+      {{else if session.isAuthenticated}}{{! gist.isOwn }}
+        <button {{action (perform forkTask)}}>Fork</button>
+      {{/if}}{{! gist.isOwn }}
+    {{/if}}{{! session.isAuthenticated }}
   </div>
 </div>{{! route-gist }}

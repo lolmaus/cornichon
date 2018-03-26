@@ -62,9 +62,12 @@ export default Mixin.create({
 
 
   setEditableFields (payload) {
-    return this.reduceEditableFields(({key, userInputKey}) => {
-      return this.set(userInputKey, payload[key])
-    })
+    return this.reduceEditableFields(
+      ({obj, key, userInputKey, payload: payloadFragment}) => {
+        return obj.set(userInputKey, payloadFragment[key])
+      },
+      payload
+    )
   },
 
 
@@ -73,14 +76,19 @@ export default Mixin.create({
     const result = {}
 
     this.editableFields.forEach(key => {
+      const obj          = this
+      const value        = this[key]
       const userInputKey = keyUserInput(key)
+      let userInputValue = this[userInputKey]
+
+      if (isArray(userInputValue)) userInputValue = userInputValue.toArray()
 
       result[key] = callback({
         key,
         userInputKey,
-        value          : this[key],
-        userInputValue : this[userInputKey],
-        obj            : this,
+        value,
+        userInputValue,
+        obj,
         payload,
       })
     })

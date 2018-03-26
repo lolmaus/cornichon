@@ -1,0 +1,71 @@
+{{#if isEditing}}
+
+
+
+  {{#if (or hasDirtyFields saveIsRunning)}}
+
+    <button
+      disabled = {{not isEditable}}
+      {{action saveAction}}
+    >
+      {{if saveIsRunning 'Saving...' 'Save'}}
+    </button>
+
+    <button
+      disabled = {{not isEditable}}
+      {{action revertAction}}
+    >
+      Revert
+    </button>
+
+  {{else}}{{! or hasDirtyFields saveIsRunning }}
+
+    <button
+      {{action cancelAction}}
+    >
+      Exit edit mode
+    </button>
+
+  {{/if}}{{! or hasDirtyFields saveIsRunning }}
+
+
+
+{{else}}{{! isEditing }}
+
+
+
+  <button
+    disabled = {{not isEditable}}
+    {{action editAction}}
+  >
+    Edit mode
+  </button>
+
+
+
+{{/if}}{{! isEditing }}
+
+
+
+{{#if isOwn}}
+
+  <button
+    disabled = {{or hasDirtyFields (not isEditable)}}
+    title = "GitHub does not allow forking gists, so instead we can create a separate copy. The gist must be saved in order to copy."
+    {{action cloneAction}}
+  >
+    {{if cloneIsRunning 'Cloning...' 'Clone'}}
+  </button>
+
+{{else if isAuthenticated}}{{! gist.isOwn }}
+
+  <button
+    disabled = {{forkIsRunning}}
+    {{action forkAction}}
+  >
+    Fork
+  </button>
+
+{{/if}}{{! gist.isOwn }}
+
+foo

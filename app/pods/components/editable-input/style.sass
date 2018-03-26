@@ -1,21 +1,21 @@
-.editableTextarea
+.editableInput
   display: flex
   align-items: center
 
   > *:not(:last-child)
     margin-right: 0.5rem
 
-  .editableTextarea-input
+  .editableInput-inputWrapper
     flex-grow: 1
 
 
 
-.editableTextarea-input
-  resize: vertical
+.editableInput-input
+  width: 100%
 
 
 
-.editableTextarea-buttons
+.editableInput-buttons
   display: flex
   align-items: center
 
@@ -24,8 +24,11 @@
 
 
 
-.editableTextarea-button
+.editableInput-button
+  font-weight: bold
   text-decoration: none
+  color: black
 
   &:hover
     text-decoration: underline
+

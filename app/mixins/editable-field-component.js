@@ -1,4 +1,5 @@
-import Component from '@ember/component'
+import Mixin from '@ember/object/mixin'
+import {later, next} from '@ember/runloop'
 import {inject as service} from '@ember/service'
 
 import {and, getBy, eq, or} from 'ember-awesome-macros'
@@ -10,14 +11,13 @@ import {keyUserInput, keyIsValid, keyIsDirty} from 'cornichon/utils/editable-fie
 
 
 
-export default Component.extend({
+export default Mixin.create({
   obj        : null,
   key        : null,
   isEditable : true,
 
   dialogs : service(),
 
-  classNames        : ['editableField'],
   classNameBindings : ['isEditing:-edting', 'isEditable:-editable:-disabled'],
 
   isEditing : false,
@@ -33,7 +33,14 @@ export default Component.extend({
     cancelEditingOnEnter (event) {
       if (event.which === 13) { // Enter
         event.preventDefault()
-        this.send('toggleEditing')
+        this.send('toggleEditing', false)
+      }
+    },
+
+    cancelEditingOnCtrlEnter (event) {
+      if (event.ctrlKey && event.which === 13) { // Ctrl-Enter
+        event.preventDefault()
+        this.send('toggleEditing', false)
       }
     },
 
@@ -41,13 +48,20 @@ export default Component.extend({
       this
         .dialogs
         .confirm({message : 'Revert changes to this field?'})
-        .then(() => this.obj.resetEditabeField({key : this.key}))
+        .then(() => {
+          this.obj.resetEditabeField({key : this.key})
+        })
     },
 
     toggleEditing (state = !this.isEditing) {
       if (state && !this.isEditable) return
 
       this.set('isEditing', state)
+      if (state) next(() => this.$('.editableField-content').focus())
+    },
+
+    delayedToggleEditing (...args) {
+      later(() => this.send('toggleEditing', ...args), 250)
     },
 
     userInput (value) {

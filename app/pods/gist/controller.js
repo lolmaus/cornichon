@@ -15,13 +15,17 @@ export default Controller.extend({
   fetch   : service(),
   dialogs : service(),
   router  : service(),
+  session : service(),
 
   gist : reads('model.gist'),
 
-  isFormEditable : and(
+  isEditing : false,
+
+  isEditable : and(
     'gist.isOwn',
     not('forkTask.isRunning'),
     not('cloneTask.isRunning'),
+    not('saveTask.isRunning'),
   ),
 
   cloneTask : task(function * () {
@@ -43,14 +47,30 @@ export default Controller.extend({
   }),
 
   saveTask : task(function * () {
-    if (!this.isFormEditable) return
-    this.gist.applyEditableFields()
-    return yield this.gist.save()
+    const gist    = this.gist
+    const payload = gist.applyEditableFields()
+
+    return yield gist
+      .save()
+      .catch(() => {
+        gist.rollbackAttributes()
+        gist.setEditableFields(payload)
+      })
   }),
 
   actions : {
+    startEditing () {
+      if (!this.isEditable) throw new Error("Can't start editing")
+      this.set('isEditing', true)
+    },
+
+    cancelEditing () {
+      if (this.gist.hasDirtyFields) throw new Error("Can't cancel editing when gist is dirty")
+      this.set('isEditing', false)
+    },
+
     revert () {
-      if (!this.isFormEditable) return
+      if (!this.isEditable) return
 
       this
         .dialogs

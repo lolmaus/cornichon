@@ -12,9 +12,10 @@ export default Component.extend({
 
 
 
-  classNames : ['loginButton'],
-  tagName    : 'button',
-  disabled   : reads('isAuthenticating'),
+  attributeBindings : ['disabled'],
+  classNames        : ['loginButton'],
+  tagName           : 'button',
+  disabled          : reads('isAuthenticating'),
 
   click () {
     this.loginToggleAction()

@@ -1,45 +1,34 @@
 import Component from '@ember/component'
+import { observer } from '@ember/object'
+import { next } from '@ember/runloop'
 
-import {and, getBy, eq, or} from 'ember-awesome-macros'
-import {trim} from 'ember-awesome-macros/string'
+import AutoresizeMixin from 'ember-autoresize/mixins/autoresize'
 import computed from 'ember-macro-helpers/computed'
-import raw from 'ember-macro-helpers/raw'
+import reads from 'ember-macro-helpers/reads'
 
-import {keyUserInput} from 'cornichon/utils/editable-fields'
+import EditableFieldComponentMixin from 'cornichon/mixins/editable-field-component'
 
 
 
-export default Component.extend({
-  obj        : null,
-  key        : null,
-  isEditable : true,
+export default Component.extend(EditableFieldComponentMixin, AutoresizeMixin, {
+  classNames : ['editableTextarea'],
 
-  classNames        : ['editableField'],
-  classNameBindings : ['isEditing:-edting', 'isEditable:-editable:-disabled'],
+  autoresize                 : reads('isEditing'),
+  autoresizeElementDidChange : null,
+  shouldResizeHeight         : true,
+  significantWhitespace      : true,
 
-  isEditing : false,
+  autoResizeText : computed('userInputValue', value => (value || '') + '@'),
 
-  userInputKey       : computed('key', keyUserInput),
-  userInputValue     : getBy('obj', 'userInputKey'),
-  isEmpty            : eq(trim('userInputValue'), raw('')),
-  isEditingEffective : or('isEditing', and('isEditable', 'isEmpty')),
+  applyAutoresize : observer('isEditing', function () {
+    next(() => {
+      const autoresizeElement = this.$('.editableTextarea-input').get(0)
+      this.setProperties({autoresizeElement})
+    })
+  }),
 
-  actions : {
-    cancelEditingOnCtrlEnter (event) {
-      if (event.ctrlKey && event.which === 13) { // Enter
-        event.preventDefault()
-        this.send('toggleEditing')
-      }
-    },
-
-    toggleEditing (state = !this.isEditing) {
-      if (state && !this.isEditable) return
-
-      this.set('isEditing', state)
-    },
-
-    userInput (value) {
-      this.obj.set(this.newKey, value)
-    },
-  },
+  fontFamilyLoaded : observer('autoresizeElement', function () {
+    if (!this.autoresizeElement) return
+    this._super()
+  }),
 })

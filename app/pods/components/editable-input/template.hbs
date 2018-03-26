@@ -1,26 +1,25 @@
 {{#if isEditingEffective}}
-  <textarea
-    class     = 'editableTextarea-input editableField-content'
+  <input
+    value     = {{userInputValue}}
+    class     = 'editableInput-input editableField-content'
     oninput   = {{action 'userInput' value="target.value"}}
-    onblur    = {{action 'toggleEditing' false}}
-    onkeydown = {{action 'cancelEditingOnCtrlEnter'}}
+    onblur    = {{action 'delayedToggleEditing' false}}
+    onkeydown = {{action 'cancelEditingOnEnter'}}
   >
-    {{~userInputValue~}}
-  </textarea>
-{{else}}{{! isEditingEffective }}
+{{else}}{{! isEditing }}
   <span
-    class = 'editableTextarea-value editableField-content'
+    class = 'editableInput-value editableField-content'
     {{action 'toggleEditing'}}
   >
     {{~userInputValue~}}
   </span>{{! value }}
-{{/if}}{{! isEditingEffective }}
+{{/if}}{{! isEditing }}
 
-<span class="editableTextarea-buttons">
+<span class="editableInput-buttons">
   {{#if isEditingEffective}}
     <a
       href
-      class = 'editableTextarea-button'
+      class = 'editableInput-button _finish'
       title = 'Finish editing'
       {{action 'toggleEditing' false}}
     >
@@ -29,7 +28,7 @@
   {{else if isEditable}}{{! isEditingEffective }}
     <a
       href
-      class = 'editableTextarea-button'
+      class = 'editableInput-button _edit'
       title = 'Edit'
       {{action 'toggleEditing' true}}
     >
@@ -40,7 +39,7 @@
   {{#if (and isEditable isDirty)}}
     <a
       href
-      class = 'editableTextarea-button'
+      class = 'editableInput-button _revert'
       title = 'Revert'
       {{action 'revert'}}
     >

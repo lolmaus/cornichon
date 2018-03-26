@@ -4,8 +4,8 @@ import { inject as service } from '@ember/service'
 
 
 export default Component.extend({
-  file           : null,
-  isFormEditable : true,
+  file       : null,
+  isEditable : false,
 
   dialogs : service(),
 
